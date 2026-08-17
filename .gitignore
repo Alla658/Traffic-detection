@@ -1,0 +1,16 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# VS Code settings
+.vscode/
+
+# Generated traffic reports
+report.csv
+filtered_traffic_report.csv
+
+# Video files
+video/*.mp4

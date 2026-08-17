@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Traffic AI | Smart Traffic Monitoring</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, Arial, sans-serif;
+            background: #070b12;
+            color: #f5f7fa;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .navbar {
+            height: 72px;
+
+            padding: 0 5%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            background: #0b111b;
+
+            border-bottom: 1px solid #1d2735;
+
+            position: sticky;
+            top: 0;
+
+            z-index: 1000;
+        }
+
+        .brand h1 {
+            margin: 0;
+
+            font-size: 21px;
+            font-weight: 700;
+
+            letter-spacing: 0.5px;
+        }
+
+        .brand p {
+            margin: 3px 0 0;
+
+            color: #7d8999;
+
+            font-size: 11px;
+
+            letter-spacing: 1px;
+        }
+
+        .online-status {
+            display: flex;
+            align-items: center;
+
+            gap: 8px;
+
+            font-size: 11px;
+
+            color: #7d8999;
+
+            letter-spacing: 1px;
+        }
+
+        .online-dot {
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #20d47b;
+
+            box-shadow: 0 0 10px rgba(32, 212, 123, 0.7);
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        main {
+            width: 100%;
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+            width: 92%;
+            max-width: 1600px;
+
+            margin: 42px auto 0;
+        }
+
+        .hero-heading {
+            margin-bottom: 20px;
+        }
+
+        .eyebrow {
+            display: block;
+
+            color: #5d9cff;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing: 2px;
+        }
+
+        .hero-heading h2 {
+            margin: 7px 0;
+
+            font-size: clamp(28px, 4vw, 42px);
+
+            line-height: 1.1;
+        }
+
+        .hero-heading p {
+            margin: 0;
+
+            color: #7f8b9d;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           VIDEO
+        ===================================================== */
+
+        .video-container {
+            position: relative;
+
+            width: 100%;
+
+            height: min(70vh, 760px);
+
+            background: #000;
+
+            border-radius: 18px;
+
+            overflow: hidden;
+
+            border: 1px solid #263345;
+
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, 0.45);
+        }
+
+        #trafficVideo {
+            width: 100%;
+            height: 100%;
+
+            display: block;
+
+            object-fit: cover;
+
+            background: #000;
+        }
+
+
+        /* =====================================================
+           HERO STATISTICS
+        ===================================================== */
+
+        .hero-stats {
+            position: absolute;
+
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            background: rgba(5, 10, 16, 0.88);
+
+            backdrop-filter: blur(12px);
+
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .hero-stat {
+            padding: 18px 24px;
+
+            border-right: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .hero-stat:last-child {
+            border-right: none;
+        }
+
+        .hero-stat-label {
+            display: block;
+
+            color: #7f8b9d;
+
+            font-size: 10px;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+        }
+
+        .hero-stat-value {
+            display: block;
+
+            margin-top: 5px;
+
+            font-size: 28px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           SCROLL INDICATOR
+        ===================================================== */
+
+        .scroll-indicator {
+            text-align: center;
+
+            padding: 50px 0 55px;
+
+            color: #687588;
+
+            font-size: 10px;
+
+            letter-spacing: 2px;
+        }
+
+        .scroll-arrow {
+            display: block;
+
+            margin-top: 12px;
+
+            font-size: 22px;
+
+            animation: bounce 1.8s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(6px);
+            }
+        }
+
+
+        /* =====================================================
+           ANALYTICS
+        ===================================================== */
+
+        .analytics {
+            width: 92%;
+            max-width: 1600px;
+
+            margin: 0 auto;
+
+            padding-bottom: 100px;
+        }
+
+        .section-heading {
+            margin-bottom: 24px;
+        }
+
+        .section-heading h2 {
+            margin: 7px 0 0;
+
+            font-size: 30px;
+        }
+
+        .section-heading p {
+            color: #7f8b9d;
+
+            margin-top: 8px;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           STATISTICS GRID
+        ===================================================== */
+
+        .stats-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 14px;
+
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: #0d141e;
+
+            border: 1px solid #202c3b;
+
+            border-radius: 12px;
+
+            padding: 24px;
+
+            min-height: 130px;
+
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+
+            border-color: #315b91;
+        }
+
+        .stat-card-label {
+            color: #7f8b9d;
+
+            font-size: 13px;
+        }
+
+        .stat-card-value {
+            display: block;
+
+            margin-top: 15px;
+
+            font-size: 34px;
+
+            font-weight: 700;
+        }
+
+        .stat-card-total {
+            border-color: #285da8;
+        }
+
+
+        /* =====================================================
+           CHART
+        ===================================================== */
+
+        .chart-card {
+            background: #0d141e;
+
+            border: 1px solid #202c3b;
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+        .card-header h3 {
+            margin: 7px 0 0;
+
+            font-size: 22px;
+        }
+
+        .chart-status {
+            color: #20d47b;
+
+            font-size: 11px;
+
+            letter-spacing: 1px;
+        }
+
+        .chart-wrapper {
+            height: 430px;
+
+            margin-top: 25px;
+        }
+
+
+        /* =====================================================
+           TRAFFIC REPORT
+        ===================================================== */
+
+        .report-card {
+            background: #0d141e;
+
+            border: 1px solid #202c3b;
+
+            border-radius: 14px;
+
+            padding: 25px;
+        }
+
+        .report-description {
+            color: #7f8b9d;
+
+            font-size: 14px;
+
+            margin-top: 8px;
+        }
+
+        .report-form {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 12px;
+
+            margin-top: 25px;
+        }
+
+        .report-form select,
+        .report-form input {
+            padding: 12px 14px;
+
+            background: #121b27;
+
+            color: #fff;
+
+            border: 1px solid #2a3748;
+
+            border-radius: 7px;
+
+            font-size: 13px;
+        }
+
+        .report-form button {
+            padding: 12px 22px;
+
+            background: #2563eb;
+
+            color: #fff;
+
+            border: none;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+        }
+
+        .report-form button:hover {
+            background: #1d4ed8;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+            padding: 30px;
+
+            text-align: center;
+
+            color: #566273;
+
+            border-top: 1px solid #1d2735;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1000px) {
+
+            .stats-grid {
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+
+            .video-container {
+                height: 60vh;
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .online-status {
+                display: none;
+            }
+
+            .hero,
+            .analytics {
+                width: 94%;
+            }
+
+            .video-container {
+                height: 55vh;
+
+                border-radius: 12px;
+            }
+
+            .hero-stats {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .hero-stat:nth-child(2) {
+                border-right: none;
+            }
+
+            .stats-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .chart-wrapper {
+                height: 300px;
+            }
+
+        }
+
+
+        @media (max-width: 450px) {
+
+            .hero-heading h2 {
+                font-size: 27px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-stat-value {
+                font-size: 23px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="navbar">
+
+        <div class="brand">
+
+            <h1>TRAFFIC AI</h1>
+
+            <p>SMART TRAFFIC MONITORING</p>
+
+        </div>
+
+
+        <div class="online-status">
+
+            <span class="online-dot"></span>
+
+            SYSTEM ONLINE
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main>
+
+
+        <!-- =================================================
+             HERO VIDEO
+        ================================================== -->
+
+        <section class="hero">
+
+
+            <div class="hero-heading">
+
+                <span class="eyebrow">
+                    REAL-TIME COMPUTER VISION
+                </span>
+
+                <h2>
+                    Live Traffic Monitoring
+                </h2>
+
+                <p>
+                    AI-powered vehicle detection and traffic analysis
+                </p>
+
+            </div>
+
+
+            <div class="video-container">
+
+                <img
+                    src="{{ url_for('video_feed') }}"
+                    alt="Traffic Video Feed"
+                    id="trafficVideo"
+                >
+
+
+                <!-- HERO STATISTICS -->
+
+                <div class="hero-stats">
+
+                    <div class="hero-stat">
+
+                        <span class="hero-stat-label">
+                            Cars
+                        </span>
+
+                        <strong
+                            class="hero-stat-value"
+                            id="heroCars"
+                        >
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="hero-stat">
+
+                        <span class="hero-stat-label">
+                            Buses
+                        </span>
+
+                        <strong
+                            class="hero-stat-value"
+                            id="heroBuses"
+                        >
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="hero-stat">
+
+                        <span class="hero-stat-label">
+                            Trucks
+                        </span>
+
+                        <strong
+                            class="hero-stat-value"
+                            id="heroTrucks"
+                        >
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="hero-stat">
+
+                        <span class="hero-stat-label">
+                            Density
+                        </span>
+
+                        <strong
+                            class="hero-stat-value"
+                            id="heroDensity"
+                        >
+                            0.00
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SCROLL
+        ================================================== -->
+
+        <div class="scroll-indicator">
+
+            SCROLL TO ANALYTICS
+
+            <span class="scroll-arrow">
+                ↓
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             ANALYTICS
+        ================================================== -->
+
+        <section class="analytics">
+
+
+            <div class="section-heading">
+
+                <span class="eyebrow">
+                    LIVE ANALYTICS
+                </span>
+
+                <h2>
+                    Traffic Statistics
+                </h2>
+
+                <p>
+                    Real-time vehicle detection and traffic activity
+                </p>
+
+            </div>
+
+
+            <!-- STATISTICS -->
+
+            <div class="stats-grid">
+
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Cars
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="carCount"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Buses
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="busCount"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Trucks
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="truckCount"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Motorbikes
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="motorbikeCount"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        People
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="personCount"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card stat-card-total">
+
+                    <span class="stat-card-label">
+                        Total Vehicles
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="totalVehicles"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Traffic Density
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="density"
+                    >
+                        0.00
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 VEHICLE TRENDS
+            ================================================== -->
+
+            <div class="chart-card">
+
+
+                <div class="card-header">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            DETECTION HISTORY
+                        </span>
+
+                        <h3>
+                            Vehicle Trends
+                        </h3>
+
+                    </div>
+
+                    <span class="chart-status">
+                        ● UPDATING
+                    </span>
+
+                </div>
+
+
+                <div class="chart-wrapper">
+
+                    <canvas
+                        id="vehicleChart"
+                        aria-label="Vehicle trends"
+                    ></canvas>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 TRAFFIC REPORT
+            ================================================== -->
+
+            <div class="report-card">
+
+
+                <div class="card-header">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            DATA EXPORT
+                        </span>
+
+                        <h3>
+                            Traffic Report
+                        </h3>
+
+                        <p class="report-description">
+                            Filter traffic detection records and export them as CSV.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form
+                    class="report-form"
+                    action="/download_csv"
+                    method="GET"
+                >
+
+                    <select
+                        name="vehicle_type"
+                        id="vehicle-type"
+                    >
+
+                        <option value="">
+                            All Vehicles
+                        </option>
+
+                        <option value="Car">
+                            Cars
+                        </option>
+
+                        <option value="Bus">
+                            Buses
+                        </option>
+
+                        <option value="Truck">
+                            Trucks
+                        </option>
+
+                        <option value="Motorcycle">
+                            Motorbikes
+                        </option>
+
+                        <option value="Person">
+                            People
+                        </option>
+
+                    </select>
+
+
+                    <button type="submit">
+                        Download CSV
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+        Traffic AI · Smart Traffic Monitoring System
+
+    </footer>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+
+
+        /* =====================================================
+           CHART
+        ====================================================== */
+
+        const ctx =
+            document
+                .getElementById('vehicleChart')
+                .getContext('2d');
+
+
+        const vehicleChart = new Chart(
+            ctx,
+            {
+
+                type: 'line',
+
+                data: {
+
+                    labels: [],
+
+                    datasets: [
+
+                        {
+                            label: 'Cars',
+                            data: [],
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.08)',
+                            tension: 0.4
+                        },
+
+                        {
+                            label: 'Buses',
+                            data: [],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.08)',
+                            tension: 0.4
+                        },
+
+                        {
+                            label: 'Trucks',
+                            data: [],
+                            borderColor: '#22c55e',
+                            backgroundColor: 'rgba(34, 197, 94, 0.08)',
+                            tension: 0.4
+                        },
+
+                        {
+                            label: 'Motorbikes',
+                            data: [],
+                            borderColor: '#eab308',
+                            backgroundColor: 'rgba(234, 179, 8, 0.08)',
+                            tension: 0.4
+                        },
+
+                        {
+                            label: 'People',
+                            data: [],
+                            borderColor: '#a855f7',
+                            backgroundColor: 'rgba(168, 85, 247, 0.08)',
+                            tension: 0.4
+                        }
+
+                    ]
+
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    interaction: {
+
+                        mode: 'index',
+
+                        intersect: false
+
+                    },
+
+                    plugins: {
+
+                        legend: {
+
+                            position: 'top',
+
+                            labels: {
+
+                                color: '#9aa6b6',
+
+                                usePointStyle: true
+
+                            }
+
+                        }
+
+                    },
+
+
+                    scales: {
+
+                        x: {
+
+                            ticks: {
+                                color: '#687588'
+                            },
+
+                            grid: {
+                                color: 'rgba(255,255,255,0.05)'
+                            }
+
+                        },
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            ticks: {
+                                color: '#687588'
+                            },
+
+                            grid: {
+                                color: 'rgba(255,255,255,0.05)'
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           UPDATE ELEMENT
+        ====================================================== */
+
+        function updateCount(
+            elementId,
+            newValue
+        ) {
+
+            const element =
+                document.getElementById(elementId);
+
+            if (element) {
+
+                element.textContent = newValue;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           UPDATE UI
+        ====================================================== */
+
+        function updateUI(data) {
+
+
+            const vehicles =
+                data.vehicle_count;
+
+
+            /* Main statistics */
+
+            updateCount(
+                'carCount',
+                vehicles.car
+            );
+
+            updateCount(
+                'busCount',
+                vehicles.bus
+            );
+
+            updateCount(
+                'truckCount',
+                vehicles.truck
+            );
+
+            updateCount(
+                'motorbikeCount',
+                vehicles.motorcycle
+            );
+
+            updateCount(
+                'personCount',
+                vehicles.person
+            );
+
+
+            updateCount(
+                'totalVehicles',
+                data.total_vehicles
+            );
+
+
+            updateCount(
+                'density',
+                Number(data.density).toFixed(2)
+            );
+
+
+            /* Hero statistics */
+
+            updateCount(
+                'heroCars',
+                vehicles.car
+            );
+
+            updateCount(
+                'heroBuses',
+                vehicles.bus
+            );
+
+            updateCount(
+                'heroTrucks',
+                vehicles.truck
+            );
+
+            updateCount(
+                'heroDensity',
+                Number(data.density).toFixed(2)
+            );
+
+
+            updateChart(data);
+
+        }
+
+
+        /* =====================================================
+           UPDATE CHART
+        ====================================================== */
+
+        function updateChart(data) {
+
+
+            const labels =
+                vehicleChart.data.labels;
+
+
+            const now =
+                new Date().toLocaleTimeString();
+
+
+            if (labels.length >= 20) {
+
+                labels.shift();
+
+                vehicleChart.data.datasets
+                    .forEach(dataset => {
+                        dataset.data.shift();
+                    });
+
+            }
+
+
+            labels.push(now);
+
+
+            vehicleChart.data.datasets[0]
+                .data
+                .push(data.vehicle_count.car);
+
+
+            vehicleChart.data.datasets[1]
+                .data
+                .push(data.vehicle_count.bus);
+
+
+            vehicleChart.data.datasets[2]
+                .data
+                .push(data.vehicle_count.truck);
+
+
+            vehicleChart.data.datasets[3]
+                .data
+                .push(data.vehicle_count.motorcycle);
+
+
+            vehicleChart.data.datasets[4]
+                .data
+                .push(data.vehicle_count.person);
+
+
+            vehicleChart.update('none');
+
+        }
+
+
+        /* =====================================================
+           GET CURRENT COUNTS
+        ====================================================== */
+
+        function fetchCurrentCounts() {
+
+
+            fetch('/current_count')
+
+                .then(response => {
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            `HTTP error: ${response.status}`
+                        );
+
+                    }
+
+                    return response.json();
+
+                })
+
+
+                .then(data => {
+
+                    updateUI(data);
+
+                })
+
+
+                .catch(error => {
+
+                    console.error(
+                        'Error fetching traffic data:',
+                        error
+                    );
+
+                });
+
+        }
+
+
+        /* =====================================================
+           START UPDATES
+        ====================================================== */
+
+        fetchCurrentCounts();
+
+
+        setInterval(
+            fetchCurrentCounts,
+            3000
+        );
+
+
+    </script>
+
+</body>
+
+</html>
